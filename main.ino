@@ -124,12 +124,12 @@ player player1, player2, player3;
 int readJoyStickButton(){
   bool buttonVal = digitalRead(joystickButtonPin);
   
-  if (buttonVal == 0 && lastButtonVal == 1){ // it is inversed because of INPUT_PULLUP (here it is pressed)
+  if (buttonVal == 0 && lastButtonVal == 1){
     lastButtonVal = 0;
     return 1;
   }
   
-  if (buttonVal == 1 && lastButtonVal == 0){ // not pressed
+  if (buttonVal == 1 && lastButtonVal == 0){
     lastButtonVal = 1;
   }
   
@@ -161,7 +161,7 @@ int readJoyStickY(){
   
   if (yAxis > highAxis && yAxisReset){
     yAxisReset = 0;
-    return -1; // Y axis is reversed for some reason
+    return -1;
   }
   else 
     if (yAxis < lowAxis && yAxisReset){
@@ -177,34 +177,34 @@ int readJoyStickY(){
 }
 
 void displayHighScore(){
-  if (highscoreNavChanged){ // display only when something changed so the screen won't flicker
+  if (highscoreNavChanged){
     if (highscoreNavStart == 0){
       lcd.clear();
+      
       lcd.print("1. ");
       lcd.print(player1.pName);
       lcd.print("  ");
       lcd.print(player1.pScore);
+      
       lcd.setCursor(0, 1);
       lcd.print("2. ");
       lcd.print(player2.pName);
       lcd.print("  ");
       lcd.print(player2.pScore);
+      
       lcd.setCursor(15, 1);
       lcd.print("v");
     }
     else{
       lcd.clear();
-      lcd.print("2. ");
-      lcd.print(player2.pName);
-      lcd.print("  ");
-      lcd.print(player2.pScore);
-      lcd.setCursor(0, 1);
+      
       lcd.print("3. ");
       lcd.print(player3.pName);
       lcd.print("  ");
       lcd.print(player3.pScore);
+      
       lcd.setCursor(15, 0);
-      lcd.print("^");
+      lcd.print("^"); 
     }
     
     highscoreNavChanged = 0;
@@ -327,17 +327,7 @@ void displayAlphabet(){
         }
       }
     }
-    if (91 != selectedChar){ // the space
-      lcd.print('_');
-    }
-    else{
-      if (characterShow){
-        lcd.print('_');
-      }
-      else{
-        lcd.print(' ');
-      }
-    }
+    
     alphabetState = 0;
   }
 }
@@ -356,7 +346,7 @@ char selectFromAlphabet(){
   if (xAxis == 1){
     selectedChar++;
     
-    if (selectedChar > 91){
+    if (selectedChar > 90){
       selectedChar = 65;
     }
     
@@ -367,18 +357,13 @@ char selectFromAlphabet(){
       selectedChar--;
       
       if (selectedChar < 65){
-        selectedChar = 91;
+        selectedChar = 90;
       }
       
       alphabetState = 1;
     }
 
   if (readJoyStickButton()){
-    if (selectedChar == 91){
-      selectedChar = 65;
-      return ' ';
-    }
-    
     int aux = selectedChar;
     selectedChar = 65;
     return char(aux);
@@ -487,7 +472,7 @@ void displaySettings(){
 }
 
 void changeSettings(){
-  if (settingsJustStarted){ // like a setup
+  if (settingsJustStarted){
     settingsChanged = 1;
     settingsJustStarted = 0;
   }
@@ -504,7 +489,7 @@ void changeSettings(){
   }
   else 
     if (viewInstructionTo){
-      if (instructions()){ // if still viewing
+      if (instructions()){
         return;
       }
       else{
@@ -516,7 +501,7 @@ void changeSettings(){
   
   displaySettings();
   
-  if (settingSelected == 1){ // changing the starting difficulty
+  if (settingSelected == 1){
     
     int xAxis = readJoyStickX();
     
@@ -527,7 +512,7 @@ void changeSettings(){
         startingLevelValue = maxLevel;
       }
       
-      settingsChanged = 1; // display just when something is changed
+      settingsChanged = 1;
     }
     else 
       if (xAxis == 1){
@@ -541,7 +526,7 @@ void changeSettings(){
       }
   }
   else 
-    if (settingSelected == 2){ // navingating through the name letters
+    if (settingSelected == 2){
       int xAxis = readJoyStickX();
       
       if (xAxis == 1){
@@ -587,13 +572,7 @@ void changeSettings(){
     if (readJoyStickButton()){
       changingName = 1;
       char aux = currentPlayer[charToReplace];
-      
-      if (aux == ' '){
-        selectedChar = 91;
-      }
-      else {
-        selectedChar = (byte)aux;
-      }
+      selectedChar = (int)aux;
     }
   }
   else 
@@ -644,24 +623,35 @@ void displayInfo(){
     if (infoDisplayStart == 1){
       lcd.clear();
       
-      lcd.print("Asteroids");
+      lcd.print("Asteroids' game");
       lcd.setCursor(0, 1);
-      lcd.print("Dananau");
+      lcd.print("Dananau Stefan");
       lcd.setCursor(15, 1);
       lcd.print("v");
     }
     else 
       if (infoDisplayStart == 2){
         lcd.clear();
-        
-        lcd.print("@https://githu");
+        lcd.print("https://github");
         lcd.setCursor(15, 0);
         lcd.print("^");
+        
         lcd.setCursor(0, 1);
-        lcd.print("b.testtesttets");
+        lcd.print(".com/DananauRa");
         lcd.setCursor(15, 1);
         lcd.print("v");
       }
+      else
+        if (infoDisplayStart == 3) {
+          lcd.clear();
+
+          lcd.print("zvan/Dodge-the");
+          lcd.setCursor(15, 0);
+          lcd.print("^");
+          
+          lcd.setCursor(0, 1);
+          lcd.print("-asteroids");         
+        }
     
     infoChanged = 0;
   }
@@ -672,7 +662,7 @@ void displayInfo(){
     infoDisplayStart--;
     
     if (infoDisplayStart < 1){
-      infoDisplayStart = 2;
+      infoDisplayStart = 3;
     }
     
     infoChanged = 1;
@@ -681,7 +671,7 @@ void displayInfo(){
     if (yAxis == -1){
       infoDisplayStart++;
       
-      if (infoDisplayStart > 2){
+      if (infoDisplayStart > 3){
         infoDisplayStart = 1;
       }
       
@@ -802,7 +792,7 @@ void displayGameStatus(int currentLives, int levelValue, int currentScore){
 }
 
 void playGame(){
-  if (gameJustStarted){ // Game Setup
+  if (gameJustStarted){
     lcd.clear();
 
     lcd.setCursor(5, 0);
@@ -818,9 +808,8 @@ void playGame(){
     // gameSetup(startingLevelValue, matrixBrightnessValue);
     gameJustStarted = 0;
   }
-  // if the player lost:
+  
   if (gameOver){
-    // don't display anything, just update highscore and redirect to the right screen
     if (gameOverScreenNo == 0){
       if (currentScore > player1.pScore){
         for (int i = 0; i < nameSize; i++){
@@ -878,7 +867,7 @@ void playGame(){
           
       gameOverScreenChanged = 1;
     }
-    // display congrats
+    
     if (gameOverScreenNo == 1){
       if (gameOverScreenChanged){
         lcd.clear();
@@ -934,53 +923,53 @@ void playGame(){
         gameOverScreenChanged = 1;
       }
     }
-    // Play again
-    else if (gameOverScreenNo == 5){
-      if (gameOverScreenChanged){
-        lcd.clear();
-        
-        lcd.print(currentPlayer);
-        lcd.print(": ");
-        lcd.print(currentScore);
-        
-        lcd.setCursor(0, 1);
-        if (gameOverSelection == 0){
-          lcd.print(">");
+    else 
+      if (gameOverScreenNo == 5){
+        if (gameOverScreenChanged){
+          lcd.clear();
+          
+          lcd.print(currentPlayer);
+          lcd.print(": ");
+          lcd.print(currentScore);
+          
+          lcd.setCursor(0, 1);
+          if (gameOverSelection == 0){
+            lcd.print(">");
+          }
+          else {
+            lcd.print(" ");
+          }
+          
+          lcd.print("Again? ");
+          if (gameOverSelection == 1){
+            lcd.print(">");
+          }
+          else {
+            lcd.print(" ");
+          }
+          
+          lcd.print("Back");
+          
+          gameOverScreenChanged = 0;
         }
-        else {
-          lcd.print(" ");
+        
+        if (readJoyStickX()){
+          gameOverSelection = !gameOverSelection;
+          gameOverScreenChanged = 1;
         }
         
-        lcd.print("Again? ");
-        if (gameOverSelection == 1){
-          lcd.print(">");
+        if (readJoyStickButton()){
+          gameOver = 0;
+          gameJustStarted = 1;
+          gameOverScreenNo = 0;
+         
+          if (gameOverSelection == 1){
+            menuWasClicked = 0;
+          }
+          
+          gameOverSelection = 0;
         }
-        else {
-          lcd.print(" ");
-        }
-        
-        lcd.print("Back");
-        
-        gameOverScreenChanged = 0;
       }
-      
-      if (readJoyStickX()){
-        gameOverSelection = !gameOverSelection;
-        gameOverScreenChanged = 1;
-      }
-      
-      if (readJoyStickButton()){
-        gameOver = 0;
-        gameJustStarted = 1;
-        gameOverScreenNo = 0;
-       
-        if (gameOverSelection == 1){ // play again
-          menuWasClicked = 0;
-        }
-        
-        gameOverSelection = 0;
-      }
-    }
     
     //displayLevel();
     //displayPlayer();
@@ -999,8 +988,7 @@ void setup(){
   
   lc.shutdown(0, false);
   lc.clearDisplay(0);
-  
-  randomSeed(analogRead(2));
+
   player1 = getPlayer(1);
   player2 = getPlayer(2);
   player3 = getPlayer(3);
