@@ -975,7 +975,7 @@ int customLevelMillis;
 int randPos;
 
 float gameSpeed;
-int noAsteroids;
+int delayAsteroids;
 unsigned long now;
 
 int totalAsteroids;
@@ -1013,7 +1013,7 @@ void spawnAsteroids() {
       gameStarted = false;
     }
 
-    if(noAsteroids == 1){
+    if(delayAsteroids == 1){
       totalAsteroids++;
       
       if (totalAsteroids == 9) {
@@ -1029,12 +1029,12 @@ void spawnAsteroids() {
       }
     }
 
-    if(noAsteroids != 4) {
-      noAsteroids++;
+    if(delayAsteroids != 3) {
+      delayAsteroids++;
       currentScore += 10 * baseLevel;
     }
      else {
-      noAsteroids = 1;
+      delayAsteroids = 1;
      }
 
     for(int i = 0; i < 8; i++){
@@ -1046,21 +1046,6 @@ void spawnAsteroids() {
     }
 
     lc.clearDisplay(0);
-  }
-
-  for(int i = 0; i < 8; i++){
-    if(asteroids[i] > 0)
-      lc.setLed(0, asteroids[i] - 2, i, true);
-      lc.setLed(0, asteroids[i] - 3, i, true);
-  }
-  
-  if (asteroids[playerPos] == 10){
-    currentLives--;
-    explosionAnimation();
-
-    if (currentLives < -100) {
-      gameOver = true;
-    }
   }
 }
 
@@ -1091,6 +1076,27 @@ void updateDirection() {
     }
 }
 
+void moveAsteroids() {
+  for(int i = 0; i < 8; i++){
+    if(asteroids[i] > 0)
+      lc.setLed(0, asteroids[i] - 2, i, true);
+      lc.setLed(0, asteroids[i] - 3, i, true);
+  }
+}
+
+void detectImpact() {
+  Serial.begin(9600);
+  Serial.println(asteroids[playerPos]);
+  if (asteroids[playerPos] == 9){
+    currentLives--;
+    explosionAnimation();
+    
+    if (currentLives < -100) {
+      gameOver = true;
+    }
+  }
+}
+
 void gameSetup(int startingLevelValue, int matrixBrightnessValue){
   lc.setIntensity(0, matrixBrightnessValue);
   lc.clearDisplay(0);
@@ -1101,7 +1107,7 @@ void gameSetup(int startingLevelValue, int matrixBrightnessValue){
   customLevelMillis = 0;
   gameSpeed = 300;
   now = millis();
-  noAsteroids = 1;
+  delayAsteroids = 1;
   gameOver = false;
   playerPos = 3;
   gameStarted = true;
@@ -1112,6 +1118,8 @@ void iterateGame(){
   displayPlayer();
   updateDirection();
   spawnAsteroids();
+  moveAsteroids();
+  detectImpact();
 }
 
 void smileAnimation(){
