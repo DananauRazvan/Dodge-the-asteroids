@@ -41,6 +41,8 @@ const int d5 = 4;
 const int d6 = 3;
 const int d7 = 2;
 
+const int buzzer = 13;
+
 bool highscoreNavStart;
 
 unsigned long int lastDisplayMillis = 0;
@@ -90,10 +92,10 @@ int baseLevel;
 int currentScore;
 int currentLives;
 
-const int maxLevel = 20;
+const int maxLevel = 25;
 int startingLevelValue = 1;
 
-int startingLives = 3;
+const int startingLives = 3;
 
 struct player {
   int pScore = 0;
@@ -239,30 +241,50 @@ bool instructions(){
     
     if (instructionOpt == 1){
       lcd.print("You should avoid");
+      
       lcd.setCursor(0, 1);
       lcd.print("the asteroids");
+      lcd.setCursor(15, 1);
+      lcd.print("v");
     }
     else 
       if (instructionOpt == 2){
         lcd.print("using your");
+        lcd.setCursor(15, 0);
+        lcd.print("^");
+        
         lcd.setCursor(0, 1);
         lcd.print("joystick. You");
+        lcd.setCursor(15, 1);
+        lcd.print("v");
       }
       else 
         if (instructionOpt == 3){
           lcd.print("lose a life");
+          lcd.setCursor(15, 0);
+          lcd.print("^");
+          
           lcd.setCursor(0, 1);
-          lcd.print("when an asteroid");
+          lcd.print("when an");
+          lcd.setCursor(15, 1);
+          lcd.print("v");
         }
         else 
           if (instructionOpt == 4){
-            lcd.print("hits you.");
+            lcd.print("asteroid hits");
+            lcd.setCursor(15, 0);
+            lcd.print("^");
+            
             lcd.setCursor(0, 1);
-            lcd.print("Good luck and");
+            lcd.print("you. Good luck");
+            lcd.setCursor(15, 1);
+            lcd.print("v");
           }
           else 
             if (instructionOpt == 5){
-              lcd.print("have fun!");
+              lcd.print("and have fun!");
+              lcd.setCursor(15, 0);
+              lcd.print("^");
             }
     
     instructionState = 0;
@@ -868,7 +890,8 @@ void playGame(){
         if (gameOverScreenChanged){
           lcd.clear();
           
-          lcd.print("You are");
+          lcd.print(currentPlayer);
+          lcd.print(", You are");
           lcd.setCursor(0, 1);
           lcd.print("in second place.");
           
@@ -880,7 +903,8 @@ void playGame(){
           if (gameOverScreenChanged){
             lcd.clear();
             
-            lcd.print("Good!");
+            lcd.print("Good, ");
+            lcd.print(currentPlayer);
             lcd.setCursor(0, 1);
             lcd.print("You're 3rd place");
             
@@ -891,10 +915,11 @@ void playGame(){
           if (gameOverScreenNo == 4){
             if (gameOverScreenChanged){
               lcd.clear();
-              
-              lcd.print("Try more! Better");
+
+              lcd.print("Better luck next");
               lcd.setCursor(0, 1);
-              lcd.print("luck next time.");
+              lcd.print("time, ");
+              lcd.print(currentPlayer);
               
               gameOverScreenChanged = 0;
             }
@@ -963,6 +988,8 @@ void playGame(){
   displayGameStatus(currentLives, baseLevel, currentScore);
 }
 
+int matrixSize = 8;
+
 int asteroids[] = {0,0,0,0,0,0,0,0};
 
 int playerPos;
@@ -975,14 +1002,20 @@ int customLevelMillis;
 int randPos;
 
 float gameSpeed;
-int delayAsteroids;
 unsigned long now;
 
 int totalAsteroids;
+int totalAsteroidsValue;
+int delayAsteroids;
+int delayAsteroidsValue;
+
+const int scoreMultiplier = 3;
+const float gameSpeedMultiplier = 1.25;
+
 bool gameStarted;
 
 void displayPlayer() {
-  lc.setLed(0, 7, playerPos, true);  
+  lc.setLed(0, matrixSize - 1, playerPos, true);  
 }
 
 void displayGameStatus(int currentLives, int levelValue, int currentScore) {
@@ -1006,38 +1039,40 @@ void displayGameStatus(int currentLives, int levelValue, int currentScore) {
 
 void spawnAsteroids() {
   if(millis() - now > gameSpeed){
+    
     now = millis();
-
+    
+    currentScore += scoreMultiplier * baseLevel;
+    
     if (gameStarted) {
-      gameSpeed = gameSpeed / pow(1.02, baseLevel);
+      gameSpeed /= pow(gameSpeedMultiplier, baseLevel);
       gameStarted = false;
     }
-
+    
     if(delayAsteroids == 1){
       totalAsteroids++;
       
-      if (totalAsteroids == 9) {
+      if (totalAsteroids == totalAsteroidsValue) {
         baseLevel++;
         totalAsteroids = 0;
-        gameSpeed = gameSpeed / 1.02;
+        gameSpeed /= gameSpeedMultiplier;
       }
      
-      randPos = random(0, 8);
+      randPos = random(0, matrixSize);
         
         if(asteroids[randPos] == 0){  
           asteroids[randPos] = 1;
       }
     }
 
-    if(delayAsteroids != 3) {
+    if(delayAsteroids != delayAsteroidsValue) {
       delayAsteroids++;
-      currentScore += 10 * baseLevel;
     }
      else {
       delayAsteroids = 1;
      }
 
-    for(int i = 0; i < 8; i++){
+    for(int i = 0; i < matrixSize; i++){
       if(asteroids[i] == 10)
         asteroids[i] = 0;
         
@@ -1055,7 +1090,7 @@ void updateDirection() {
   if (xAxis == 1) {
     playerPos++;
 
-    if (playerPos > 7) {
+    if (playerPos > matrixSize - 1) {
       playerPos = 0;
 
     lc.clearDisplay(0);
@@ -1066,7 +1101,7 @@ void updateDirection() {
       playerPos--;
 
       if (playerPos < 0) {
-        playerPos = 7;
+        playerPos = matrixSize - 1;
       }
 
       lc.clearDisplay(0);
@@ -1077,7 +1112,7 @@ void updateDirection() {
 }
 
 void moveAsteroids() {
-  for(int i = 0; i < 8; i++){
+  for(int i = 0; i < matrixSize; i++){
     if(asteroids[i] > 0)
       lc.setLed(0, asteroids[i] - 2, i, true);
       lc.setLed(0, asteroids[i] - 3, i, true);
@@ -1085,24 +1120,29 @@ void moveAsteroids() {
 }
 
 void detectImpact() {
-  Serial.begin(9600);
-  Serial.println(asteroids[playerPos]);
   if (asteroids[playerPos] == 9){
+    asteroids[playerPos] = 0;
     currentLives--;
-    explosionAnimation();
     
-    if (currentLives < -100) {
+    tone(buzzer, 500);
+    explosionAnimation();
+    noTone(buzzer);
+    delay(500);
+    
+    if (currentLives == 0) {
       gameOver = true;
+      
+      lc.clearDisplay(0);
+      sadAnimation();
     }
   }
 }
 
 void gameSetup(int startingLevelValue, int matrixBrightnessValue){
-  lc.setIntensity(0, matrixBrightnessValue);
   lc.clearDisplay(0);
   baseLevel = startingLevelValue;
   currentScore = 0;
-  currentLives = 3;
+  currentLives = startingLives;
   playerIsDead = 0;
   customLevelMillis = 0;
   gameSpeed = 300;
@@ -1112,6 +1152,8 @@ void gameSetup(int startingLevelValue, int matrixBrightnessValue){
   playerPos = 3;
   gameStarted = true;
   totalAsteroids = 0;
+  totalAsteroidsValue = 9;
+  delayAsteroidsValue = 3;
 }
 
 void iterateGame(){
@@ -1134,8 +1176,25 @@ void smileAnimation(){
     B00000000
   };
 
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < matrixSize; i++) {
     lc.setRow(0, i, smileByte[i]);
+  }
+}
+
+void sadAnimation() {
+  const byte sadByte[8] = {
+    B00000000,
+    B01100110,
+    B01100110,
+    B00000000,
+    B00000000,
+    B00111100,
+    B01000010,
+    B10000001
+  };
+
+  for (int i = 0; i < matrixSize; i++) {
+    lc.setRow(0, i, sadByte[i]);
   }
 }
 
@@ -1149,7 +1208,8 @@ void explosionAnimation() {
     }
 }
 
-void setup(){
+void setup() {
+  pinMode(buzzer, OUTPUT);
   pinMode(joystickButtonPin, INPUT_PULLUP);
   
   lcd.begin(16, 2);
@@ -1167,7 +1227,8 @@ void setup(){
   smileAnimation();
 }
 
-void loop(){
+void loop() {
+  lc.setIntensity(0, matrixBrightnessValue);
   if (!menuWasClicked){
     if (readJoyStickButton()){
       menuWasClicked = 1;
