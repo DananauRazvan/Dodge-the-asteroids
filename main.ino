@@ -1010,7 +1010,7 @@ int delayAsteroids;
 int delayAsteroidsValue;
 
 const int scoreMultiplier = 3;
-const float gameSpeedMultiplier = 1.25;
+const float gameSpeedMultiplier = 1.15;
 
 bool gameStarted;
 
