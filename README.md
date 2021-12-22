@@ -13,6 +13,6 @@ LCD, led matrix, joystick, buzzer, 2 breadboards, potentiometer, wires, rezistor
 [![IMG-1294.jpg](https://i.postimg.cc/NfGnjy2q/IMG-1294.jpg)](https://postimg.cc/vDjhPZv3)
 
 ### Video:
-[![Watch the video](https://postimg.cc/vDjhPZv3)](https://www.youtube.com/watch?v=91A56cQXd6I)
+[![Watch the video](https://i.postimg.cc/NfGnjy2q/IMG-1294.jpg)](https://www.youtube.com/watch?v=91A56cQXd6I)
 
 
