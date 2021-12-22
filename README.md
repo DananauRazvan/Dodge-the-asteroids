@@ -7,7 +7,17 @@ A very simple game where you have to avoid the asteroids as much as possible. Th
 You have to press start game and dodge the asteroids using joystick to get the highest score possible. You have 3 lives.
 
 ### Components: 
-LCD, led matrix, joystick, buzzer, 2 breadboards, potentiometer, wires, rezistors.
+* Arduino UNO
+* LCD 
+* LED Matrix
+* Joystick
+* Buzzer, 
+* 3 Breadboards
+* Potentiometer,
+* Wires
+* Rezistors
+* MAX 7219 Matrix Driver
+* Capacitors
 
 ### Image:
 [![IMG-1294.jpg](https://i.postimg.cc/NfGnjy2q/IMG-1294.jpg)](https://postimg.cc/vDjhPZv3)
