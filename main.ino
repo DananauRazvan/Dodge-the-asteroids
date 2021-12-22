@@ -124,7 +124,7 @@ void writePlayer(byte pos, player p){
 }
 
 player player1, player2, player3;
-
+/// Joystick
 int readJoyStickButton(){
   bool buttonVal = digitalRead(joystickButtonPin);
   
@@ -179,7 +179,7 @@ int readJoyStickY(){
   
   return 0;
 }
-
+// Display top 3 highscores
 void displayHighScore(){
   if (highscoreNavChanged){
     if (highscoreNavStart == 0){
@@ -214,7 +214,7 @@ void displayHighScore(){
     highscoreNavChanged = 0;
   }
 }
-
+/// Navigate highscore, entry and exit
 void navigateHighScores(){
   if (highscoreJustStarted){
     highscoreNavChanged = 1;
@@ -234,7 +234,7 @@ void navigateHighScores(){
     highscoreNavStart = 0;
   }
 }
-
+/// Display how to play
 bool instructions(){
   if (instructionState){
     lcd.clear();
@@ -319,7 +319,7 @@ bool instructions(){
     return 1;
   }
 }
-
+/// Display alphabet
 void displayAlphabet(){
   if (alphabetState){
     lcd.clear();
@@ -355,7 +355,7 @@ void displayAlphabet(){
     alphabetState = 0;
   }
 }
-
+/// Navigate alphabet and select char
 char selectFromAlphabet(){
   if (millis() - lastMillisForAlphabet >= millisForAlphabet){
     characterShow = !characterShow;
@@ -395,7 +395,7 @@ char selectFromAlphabet(){
   
   return '.';
 }
-
+/// Display all settings
 void displaySettings(){
   if (settingSelected == 2){
     if (millis() - lastMillisForAlphabet >= millisForAlphabet){
@@ -494,13 +494,13 @@ void displaySettings(){
     settingsChanged = 0;
   }
 }
-
+// Modify settings
 void changeSettings(){
   if (settingsJustStarted){
     settingsChanged = 1;
     settingsJustStarted = 0;
   }
-
+  // Show in main settings modified char
   if (changingName){
     char aux = selectFromAlphabet();
     
@@ -524,7 +524,7 @@ void changeSettings(){
     }
   
   displaySettings();
-  
+  // modify starting level
   if (settingSelected == 1){
     
     int xAxis = readJoyStickX();
@@ -549,7 +549,7 @@ void changeSettings(){
         settingsChanged = 1;
       }
   }
-  else 
+  else // select char from name to replace
     if (settingSelected == 2){
       int xAxis = readJoyStickX();
       
@@ -606,7 +606,7 @@ void changeSettings(){
         instructionState = 1;
       }
     }
-    else 
+    else // modify brightness
       if (settingSelected == 4) {
         int xAxis = readJoyStickX();
         
@@ -630,7 +630,7 @@ void changeSettings(){
             settingsChanged = 1;
           }
       }
-      else 
+      else // back
         if (settingSelected == 5){
           if (readJoyStickButton()){
             menuWasClicked = 0;
@@ -641,7 +641,7 @@ void changeSettings(){
           }
         }
 }
-
+// Display info
 void displayInfo(){
   if (infoChanged){
     if (infoDisplayStart == 1){
@@ -708,7 +708,7 @@ void displayInfo(){
     infoDisplayStart = 1;
   }
 }
-
+// Display menu
 void displayMenu(){
   if (menuChanged){
     lcd.clear();
@@ -751,7 +751,7 @@ void displayMenu(){
     menuChanged = 0;
   }
 }
-
+// Navigate menu
 void menuSelect(){
   if (menuJustStarted){
     menuChanged = 1;
@@ -795,7 +795,7 @@ void menuSelect(){
     menuChanged = 1;
   }
 }
-
+// Game
 void playGame(){
   if (gameJustStarted){
     lcd.clear();
@@ -809,11 +809,11 @@ void playGame(){
     lcd.setCursor(5, 0);
     lcd.print("Start!");
     delay(500);
-    
+    // Setup from settings
     gameSetup(startingLevelValue, matrixBrightnessValue);
     gameJustStarted = 0;
   }
-  
+  // Highscores write, if exists
   if (gameOver){
     if (gameOverScreenNo == 0){
       if (currentScore > player1.pScore){
@@ -872,7 +872,7 @@ void playGame(){
           
       gameOverScreenChanged = 1;
     }
-    
+    // Messages at the end of the game
     if (gameOverScreenNo == 1){
       if (gameOverScreenChanged){
         lcd.clear();
@@ -924,14 +924,14 @@ void playGame(){
               gameOverScreenChanged = 0;
             }
           }
-    
+    // Press to move forward
     if (gameOverScreenNo >= 1 && gameOverScreenNo <= 4){
       if (readJoyStickButton()){
         gameOverScreenNo = 5;
         gameOverScreenChanged = 1;
       }
     }
-    else 
+    else // Play again or go back in menu 
       if (gameOverScreenNo == 5){
         if (gameOverScreenChanged){
           lcd.clear();
@@ -1017,7 +1017,7 @@ bool gameStarted;
 void displayPlayer() {
   lc.setLed(0, matrixSize - 1, playerPos, true);  
 }
-
+// On lcd when u play
 void displayGameStatus(int currentLives, int levelValue, int currentScore) {
   if (millis() - lastDisplayMillis > displayDelay) {
     lcd.clear();
@@ -1036,7 +1036,7 @@ void displayGameStatus(int currentLives, int levelValue, int currentScore) {
     lastDisplayMillis = millis();
   }
 }
-
+// Spawn objects
 void spawnAsteroids() {
   if(millis() - now > gameSpeed){
     
@@ -1155,7 +1155,7 @@ void gameSetup(int startingLevelValue, int matrixBrightnessValue){
   totalAsteroidsValue = 9;
   delayAsteroidsValue = 3;
 }
-
+// Runing during the game
 void iterateGame(){
   displayPlayer();
   updateDirection();
