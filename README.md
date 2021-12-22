@@ -9,5 +9,10 @@ You should dodge the asteroids using joystick to get the highest score possible.
 ### Components: 
 LCD, led matrix, joystick, buzzer, 2 breadboards, potentiometer, wires, rezistors.
 
+### Image:
+![image_67161601](https://user-images.githubusercontent.com/73775639/138858931-820d7f9f-308d-4b7e-baad-75231b7b4126.JPG)
+
+### Video:
+[![Watch the video](https://i.imgur.com/ivlw05b.jpg)](https://www.youtube.com/watch?v=rKTuzLZIjcs)
 
 
